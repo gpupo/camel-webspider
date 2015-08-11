@@ -1,10 +1,22 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
-use CamelSpider\Entity\AbstractSpiderEgg,
-    CamelSpider\Entity\Pool,
-    Symfony\Component\DomCrawler\Form;
+use CamelSpider\Entity\AbstractSpiderEgg;
+use CamelSpider\Entity\Pool;
+use Symfony\Component\DomCrawler\Form;
 
 abstract class AbstractSpider extends AbstractSpiderEgg
 {
@@ -16,7 +28,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
     protected $limitReached = false;
     protected $logger_level = 1;
     protected $name = 'Spider';
-    protected $time = array('total' => 0, 'parcial' => 0);
+    protected $time = ['total' => 0, 'parcial' => 0];
     protected $pool;
     protected $requests = 0;
     protected $subscription;
@@ -31,7 +43,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
     }
 
     /**
-     * Convert string of auth information into a array
+     * Convert string of auth information into a array.
      *
      * Sample auth info (one parameter per line):
      *  "type":"form"
@@ -48,14 +60,15 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
      *
      * @param string $string
+     *
      * @return array $a
      */
     public function getAuthCredentials($string)
     {
-        $json = '{' . str_replace(PHP_EOL, ',', trim($string)) . '}';
+        $json = '{'.str_replace(PHP_EOL, ',', trim($string)).'}';
         $a =  json_decode($json);
         if (is_null($a)) {
-            throw new \Exception('Invalid credentials syntaxe. Received: ' . trim($string) . "\n" . $json);
+            throw new \Exception('Invalid credentials syntaxe. Received: '.trim($string)."\n".$json);
         }
 
         $credentials = (array) $a;
@@ -64,7 +77,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
             throw new \Exception('Missing credentials information');
         }
 
-        $defaults = array('type' => 'form', 'username_input' => 'username', 'password_input' => 'password');
+        $defaults = ['type' => 'form', 'username_input' => 'username', 'password_input' => 'password'];
         foreach ($defaults as $k => $v) {
             if (!array_key_exists($k, $credentials)) {
                 $credentials[$k] = $v;
@@ -81,44 +94,40 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
     /**
      * Faz a requisição, seja por Zend Http Client ou Consumindo Feed
-     * Makes the request, either by Zend Http Client or consuming Feed
+     * Makes the request, either by Zend Http Client or consuming Feed.
      */
     public function getCrawler($URI, $mode = 'GET', $type =  'html')
     {
         $this->logger(
             'created a Crawler for:'
                 ."\n"
-                . $URI
-                ."\n"
-            ,'info', 5);
+                .$URI
+                ."\n", 'info', 5);
 
         $this->requests++;
-        if ($type == 'html') {
+        if ($type === 'html') {
             try {
                 $this->logger('Create instance of Goutte', 'debug', 5);
                 $client = $this->goutte->request($mode, $URI);
                 $this->logger('Goutte done', 'debug', 5);
-            }
-            catch(\Zend\Http\Client\Adapter\Exception\TimeoutException $e)
-            {
+            } catch (\Zend\Http\Client\Adapter\Exception\TimeoutException $e) {
                 $this->logger('Goutte exception Timeout', 'debug', 3);
-                $this->logger( 'faillure on create a crawler [' . $URI . ']', 'err');
+                $this->logger('faillure on create a crawler ['.$URI.']', 'err');
             }
 
             //Error in request
             $this->logger(
                 'Status Code: ['
-                    . $this->getResponse()->getStatus() . ']', 'info', 4
+                    .$this->getResponse()->getStatus().']', 'info', 4
             );
-            if($this->getResponse()->getStatus() >= 400){
+            if ($this->getResponse()->getStatus() >= 400) {
                 throw new \Exception(
                     'Request with error: '
-                        . $this->getResponse()->getStatus()
-                        . " - " . $this->getResponseErrorMessage($client)
+                        .$this->getResponse()->getStatus()
+                        .' - '.$this->getResponseErrorMessage($client)
                 );
             }
         } else {
-
             $this->logger('Create instance of Zend Feed Reader', 'info', 4);
             $client = $this->feedReader->request($URI);
         }
@@ -128,7 +137,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
     /**
      * Retorna o resumo de operações até o momento
-     * para compatibilidade com versões anteriores
+     * para compatibilidade com versões anteriores.
      */
     public function getResume()
     {
@@ -137,15 +146,14 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
     /**
      * Retorna o resumo de operações até o momento
-     * Returns a summary of the operations so far
+     * Returns a summary of the operations so far.
      *
      * @return string
      */
     public function getSummary()
     {
-
         return "\n\n"
-            . sprintf(
+            .sprintf(
                 $this->getSummaryTemplate(),
                 $this->subscription,
                 $this->getMemoryUsage(),
@@ -160,23 +168,23 @@ abstract class AbstractSpider extends AbstractSpiderEgg
     }
 
     /**
-     * Execute login on a webform
+     * Execute login on a webform.
      *
      * @param array $credentials
+     *
      * @return bool status of login
      */
     public function loginForm(array $credentials)
     {
-
         foreach ($this->loginFormRequirements() as $r) {
             if (!array_key_exists($r, $credentials)) {
-                throw new \Exception('Login on web form require ' . $r . ' attribute');
+                throw new \Exception('Login on web form require '.$r.' attribute');
             }
         }
 
         $formUri = $this->subscription->getUriTarget();
-        $this->addBackendLogger('Acessando *' . $formUri . '*');
-        $this->logger('Get webform for '. $formUri);
+        $this->addBackendLogger('Acessando *'.$formUri.'*');
+        $this->logger('Get webform for '.$formUri);
 
         $crawler = $this->getClient()->request('GET', $formUri);
 
@@ -190,17 +198,16 @@ abstract class AbstractSpider extends AbstractSpiderEgg
         $form = $button->form();
 
         //Fill inputs
-        $values = array();
-        foreach (array('username', 'password') as $k) {
-            $input = $credentials[$k . '_input'];
-            $values[$credentials[$k . '_input']] = $credentials[$k];
-            $form[$credentials[$k . '_input']] = $credentials[$k];
+        $values = [];
+        foreach (['username', 'password'] as $k) {
+            $input = $credentials[$k.'_input'];
+            $values[$credentials[$k.'_input']] = $credentials[$k];
+            $form[$credentials[$k.'_input']] = $credentials[$k];
             $this->addBackendLogger('Preenchendo o campo *'
-                . $credentials[$k . '_input']
-                . '* com o valor *'
-                . $credentials[$k]
-                . '*');
-
+                .$credentials[$k.'_input']
+                .'* com o valor *'
+                .$credentials[$k]
+                .'*');
         }
         // submit the form
         $this->addBackendLogger('Login Submit');
@@ -208,11 +215,10 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
         $crawler = $this->getClient()->request('GET', $formUri);
         //Check return
-        $this->addBackendLogger('Testando a existência da frase: *' . $credentials['expected'] . '*');
+        $this->addBackendLogger('Testando a existência da frase: *'.$credentials['expected'].'*');
         $responseText = $crawler->first()->text();
 
-        if (false !== mb_stripos($responseText, $credentials['expected']))
-        {
+        if (false !== mb_stripos($responseText, $credentials['expected'])) {
             //Successful
             $this->addBackendLogger('Login Successful');
 
@@ -227,7 +233,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
     public function loginFormRequirements()
     {
-        return array('username', 'password', 'button', 'expected', 'password_input', 'username_input');
+        return ['username', 'password', 'button', 'expected', 'password_input', 'username_input'];
     }
 
     /**
@@ -240,7 +246,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
 
     protected function addBackendLogger($string)
     {
-        $this->backendLogger .= $string . ".\n";
+        $this->backendLogger .= $string.".\n";
         $this->logger($string, 'info', $this->logger_level);
     }
 
@@ -284,18 +290,18 @@ abstract class AbstractSpider extends AbstractSpiderEgg
         return $this->subscription;
     }
 
-   protected function getDomain()
+    protected function getDomain()
     {
         return $this->getSubscription()->get('domain');
     }
 
     protected function getLinkTags()
     {
-        return array(
-            'subscription_' . $this->subscription['id'],
+        return [
+            'subscription_'.$this->subscription['id'],
             'crawler',
-            'processor'
-        );
+            'processor',
+        ];
     }
 
     protected function getSummaryTemplate()
@@ -304,7 +310,7 @@ abstract class AbstractSpider extends AbstractSpiderEgg
  ====================SUMMARY========================
     %s
     - Memory usage...........................%s Mb
-    - Number of new requests.................%s 
+    - Number of new requests.................%s
     - Time total.............................%s Seg
     - Objects in cache.......................%s
     - Success................................%s
@@ -353,7 +359,6 @@ EOF;
         }
 
         if ($login) {
-
             return true;
         }
 
@@ -367,30 +372,30 @@ EOF;
     protected function loginFormLocate($crawler, $credentials)
     {
         //try find by form name
-        $elementName = 'form:contains("' . $credentials['contains'] . '")';
-        $this->logger('Try locate form by element name ' . $elementName, 'info', $this->logger_level);
+        $elementName = 'form:contains("'.$credentials['contains'].'")';
+        $this->logger('Try locate form by element name '.$elementName, 'info', $this->logger_level);
         $item = $crawler->filter($elementName);
-        $this->logger('Itens located: #' . $item->count(), 'info', $this->logger_level);
+        $this->logger('Itens located: #'.$item->count(), 'info', $this->logger_level);
         $form = $item->first()->first()->form();
 
         if (!$form instanceof Form) {
             throw new \Exception('Não localizou o Form');
         }
 
-        $this->logger('Form Text: ' . $form->text(), 'info', $this->logger_level);
+        $this->logger('Form Text: '.$form->text(), 'info', $this->logger_level);
 
         return $form;
     }
 
     /**
      * Localiza o formulario para login
-     * Find the login form
+     * Find the login form.
      */
     protected function loginButtonLocate($crawler, $credentials)
     {
         //try find by button name
         $button = $credentials['button'];
-        $this->addBackendLogger('Localizando botão de formulário que contenha *' . $button . '*');
+        $this->addBackendLogger('Localizando botão de formulário que contenha *'.$button.'*');
         $item = $crawler->selectButton($button);
         if (method_exists($item, 'count') && $item->count() > 0) {
             $this->debugger($item->count());
@@ -399,9 +404,9 @@ EOF;
         }
 
         $elementName = '//input[contains(@src, "login")]';
-        $this->logger('Try locate button by element name ' . $elementName, 'info', $this->logger_level);
+        $this->logger('Try locate button by element name '.$elementName, 'info', $this->logger_level);
         $item = $crawler->filterXPath($elementName);
-        $this->logger('Itens located: #' . $item->count(), 'info', $this->logger_level);
+        $this->logger('Itens located: #'.$item->count(), 'info', $this->logger_level);
 
         done:
 
@@ -417,7 +422,7 @@ EOF;
     }
 
     /**
-     * call on every new Subscription
+     * call on every new Subscription.
      */
     protected function restart()
     {
@@ -434,12 +439,13 @@ EOF;
     }
 
     /**
-     * Get Memory usage in MB
+     * Get Memory usage in MB.
+     *
      * @return int
      **/
     protected function getMemoryUsage()
     {
-        return round((\memory_get_usage(true)/1024) / 1024);
+        return round((\memory_get_usage(true) / 1024) / 1024);
     }
 
     /**
@@ -451,7 +457,7 @@ EOF;
     }
 
     /**
-     * Checl if memory or requests is reached
+     * Checl if memory or requests is reached.
      */
     protected function checkLimit()
     {
@@ -461,28 +467,31 @@ EOF;
 
         $this->logger(
             'Current memory usage:'
-            . $this->getMemoryUsage()
-            . 'Mb', 'info',
+            .$this->getMemoryUsage()
+            .'Mb', 'info',
             5
         );
 
         if (
             $this->getMemoryUsage() > $this->getConfig('memory_limit', 75)
-        ){
+        ) {
             $this->logger('Limit of memory reached', 'err');
             $this->limitReached = true;
-           return false;
+
+            return false;
         }
-        if(
+        if (
             $this->requests >= $this->getConfig(
                 'requests_limit',
                 isset($_SERVER['HTTP_HOST']) ? 15 : 60
             )
-        ){
+        ) {
             $this->limitReached = true;
             $this->logger('Limit of requests reached', 'info', 1);
+
             return false;
         }
+
         return true;
     }
 

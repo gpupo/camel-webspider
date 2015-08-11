@@ -1,21 +1,32 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Entity;
-use Doctrine\Common\Collections\ArrayCollection,
-    CamelSpider\Entity\Document,
-    CamelSpider\Entity\InterfaceLink;
+
+use Doctrine\Common\Collections\ArrayCollection;
 
 class Link extends ArrayCollection implements InterfaceLink
 {
     public function __construct($node = null)
     {
-        $link = array();
+        $link = [];
 
         if (!is_null($node) && $node instanceof \DOMElement) {
-            $link = array(
+            $link = [
                 'href' => $node->getAttribute('href'),
                 'rel'  => $node->getAttribute('rel'),
-            );
+            ];
         } elseif (is_string($node)) {
             $link['href'] = $node;
         }
@@ -35,7 +46,7 @@ class Link extends ArrayCollection implements InterfaceLink
     }
 
     /**
-     * Gera o hash para armazenar em cache
+     * Gera o hash para armazenar em cache.
      **/
     public function getId($mode = null)
     {
@@ -53,9 +64,8 @@ class Link extends ArrayCollection implements InterfaceLink
     }
 
     public function setDocument($uri, $response,
-        $subscription, array $dependency = NULL
-    )
-    {
+        $subscription, array $dependency = null
+    ) {
         $this->set('document', new Document(
             $uri, $response, $subscription, $dependency
         ));
@@ -72,7 +82,7 @@ class Link extends ArrayCollection implements InterfaceLink
     }
 
     /**
-     * reduce memory usage
+     * reduce memory usage.
      */
     public function toMinimal()
     {

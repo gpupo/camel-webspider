@@ -1,10 +1,20 @@
-<?php 
+<?php
+
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
 
 namespace CamelSpider\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection,
-    CamelSpider\Entity\InterfaceLink,
-    CamelSpider\Entity\Link;
+use Doctrine\Common\Collections\ArrayCollection;
 
 abstract class AbstractSubscription extends ArrayCollection implements
     InterfaceSubscription
@@ -25,6 +35,7 @@ abstract class AbstractSubscription extends ArrayCollection implements
     public function getFilter($type)
     {
         $filters = $this->getFilters();
+
         return $this->_explode($filters[$type]);
     }
 
@@ -67,7 +78,7 @@ abstract class AbstractSubscription extends ArrayCollection implements
     public function insideScope(Link $link)
     {
         if (
-            substr($link->get('href'), 0, 4) == 'http' &&
+            substr($link->get('href'), 0, 4) === 'http' &&
             !$this->inDomain($link->get('href'))
         ) {
             return false;
@@ -87,15 +98,15 @@ abstract class AbstractSubscription extends ArrayCollection implements
     }
 
     /**
-     * normalize escapes after commas
+     * normalize escapes after commas.
      *
-     * @param string $x   String to explode
+     * @param string $x String to explode
      *
      * @return string
      */
     public function normalize($x)
     {
-        return str_replace(array(' ,', ', '), array(',',','), $x);
+        return str_replace([' ,', ', '], [',', ','], $x);
     }
 
     public function setStatus($x)
@@ -109,19 +120,19 @@ abstract class AbstractSubscription extends ArrayCollection implements
     }
 
     /**
-     * Returns an array from a value by exploding
+     * Returns an array from a value by exploding.
      *
      * @param string $x   String to explode
      * @param string $sep The separator (default to comma)
      *
      * @return array
      */
-    public function _explode($x, $sep=',')
+    public function _explode($x, $sep = ',')
     {
         if (strpos($x, $sep) !== false) {
             return explode($sep, $this->normalize($x));
         } else {
-            return array($x);
+            return [$x];
         }
     }
 
@@ -132,15 +143,10 @@ abstract class AbstractSubscription extends ArrayCollection implements
 
     protected function inDomain($str)
     {
-        foreach($this->getDomain() as $domain)
-        {
-            if(stripos($str, $domain))
-            {
+        foreach ($this->getDomain() as $domain) {
+            if (stripos($str, $domain)) {
                 return true;
             }
         }
     }
 }
-
-
-

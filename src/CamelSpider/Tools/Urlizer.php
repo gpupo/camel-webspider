@@ -1,10 +1,22 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Tools;
 
 /**
  * This is the part taken from Doctrine 1.2.3
- * Doctrine inflector has static methods for inflecting text
+ * Doctrine inflector has static methods for inflecting text.
  *
  * The methods in these classes are from several different sources collected
  * across several different php projects and several different authors. The
@@ -13,50 +25,69 @@ namespace CamelSpider\Tools;
  * Uses 3rd party libraries and functions:
  *         http://sourceforge.net/projects/phputf8
  *
- * @package     Doctrine
- * @subpackage  Urlizer
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
+ *
  * @link        www.doctrine-project.org
  * @since       1.0
+ *
  * @version     $Revision: 3189 $
+ *
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Jonathan H. Wage <jonwage@gmail.com>
  * @author         <hsivonen@iki.fi>
+ *
  * @see         https://github.com/l3pp4rd/DoctrineExtensions/blob/master/lib/Gedmo/Sluggable/Util/Urlizer.php
  */
-
 class Urlizer
 {
     /**
-     * Check if a string has utf7 characters in it
+     * Check if a string has utf7 characters in it.
      *
      * By bmorel at ssi dot fr
      *
-     * @param  string $string
-     * @return boolean $bool
+     * @param string $string
+     *
+     * @return bool $bool
      */
     public static function seemsUtf8($string)
     {
         for ($i = 0; $i < strlen($string); $i++) {
-            if (ord($string[$i]) < 0x80) continue; # 0bbbbbbb
-            elseif ((ord($string[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
-            elseif ((ord($string[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
-            elseif ((ord($string[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
-            elseif ((ord($string[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
-            elseif ((ord($string[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
-            else return false; # Does not match any model
-            for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
-                if ((++$i == strlen($string)) || ((ord($string[$i]) & 0xC0) != 0x80))
+            if (ord($string[$i]) < 0x80) {
+                continue;
+            } # 0bbbbbbb
+            elseif ((ord($string[$i]) & 0xE0) === 0xC0) {
+                $n = 1;
+            } # 110bbbbb
+            elseif ((ord($string[$i]) & 0xF0) === 0xE0) {
+                $n = 2;
+            } # 1110bbbb
+            elseif ((ord($string[$i]) & 0xF8) === 0xF0) {
+                $n = 3;
+            } # 11110bbb
+            elseif ((ord($string[$i]) & 0xFC) === 0xF8) {
+                $n = 4;
+            } # 111110bb
+            elseif ((ord($string[$i]) & 0xFE) === 0xFC) {
+                $n = 5;
+            } # 1111110b
+            else {
                 return false;
+            } # Does not match any model
+            for ($j = 0; $j < $n; $j++) { # n bytes matching 10bbbbbb follow ?
+                if ((++$i === strlen($string)) || ((ord($string[$i]) & 0xC0) !== 0x80)) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
     /**
      * Remove any illegal characters, accents, etc.
      *
-     * @param  string $string  String to unaccent
+     * @param string $string String to unaccent
+     *
      * @return string $string  Unaccented string
      */
     public static function unaccent($string)
@@ -66,7 +97,7 @@ class Urlizer
         }
 
         if (self::seemsUtf8($string)) {
-            $chars = array(
+            $chars = [
             // Decompositions for Latin-1 Supplement
             chr(195).chr(128) => 'A', chr(195).chr(129) => 'A',
             chr(195).chr(130) => 'A', chr(195).chr(131) => 'A',
@@ -165,11 +196,11 @@ class Urlizer
             chr(226).chr(130).chr(172) => 'E',
             // GBP (Pound) Sign
             chr(194).chr(163) => '',
-            'Ä' => 'Ae', 'ä' => 'ae', 'Ü' => 'Ue', 'ü' => 'ue',
-            'Ö' => 'Oe', 'ö' => 'oe', 'ß' => 'ss',
+            'Ä'              => 'Ae', 'ä' => 'ae', 'Ü' => 'Ue', 'ü' => 'ue',
+            'Ö'              => 'Oe', 'ö' => 'oe', 'ß' => 'ss',
             // Norwegian characters
-            'Å'=>'Aa','Æ'=>'Ae','Ø'=>'O','æ'=>'a','ø'=>'o','å'=>'aa'
-            );
+            'Å' => 'Aa','Æ' => 'Ae','Ø' => 'O','æ' => 'a','ø' => 'o','å' => 'aa',
+            ];
 
             $string = strtr($string, $chars);
         } else {
@@ -185,11 +216,11 @@ class Urlizer
             .chr(244).chr(245).chr(246).chr(248).chr(249).chr(250).chr(251)
             .chr(252).chr(253).chr(255);
 
-            $chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
+            $chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
             $string = strtr($string, $chars['in'], $chars['out']);
-            $doubleChars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));
-            $doubleChars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
+            $doubleChars['in'] = [chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254)];
+            $doubleChars['out'] = ['OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th'];
             $string = str_replace($doubleChars['in'], $doubleChars['out'], $string);
         }
 
@@ -197,24 +228,28 @@ class Urlizer
     }
 
     /**
-    * US-ASCII transliterations of Unicode text
-    * Ported Sean M. Burke's Text::Unidecode Perl module (He did all the hard work!)
-    * Warning: you should only pass this well formed UTF-8!
-    * Be aware it works by making a copy of the input string which it appends transliterated
-    * characters to - it uses a PHP output buffer to do this - it means, memory use will increase,
-    * requiring up to the same amount again as the input string
-    *
-    * @see http://search.cpan.org/~sburke/Text-Unidecode-0.04/lib/Text/Unidecode.pm
-    * @param string UTF-8 string to convert
-    * @author <hsivonen@iki.fi>
-    * @param string (default = ?) Character use if character unknown
-    * @return string US-ASCII string
-    */
+     * US-ASCII transliterations of Unicode text
+     * Ported Sean M. Burke's Text::Unidecode Perl module (He did all the hard work!)
+     * Warning: you should only pass this well formed UTF-8!
+     * Be aware it works by making a copy of the input string which it appends transliterated
+     * characters to - it uses a PHP output buffer to do this - it means, memory use will increase,
+     * requiring up to the same amount again as the input string.
+     *
+     * @see http://search.cpan.org/~sburke/Text-Unidecode-0.04/lib/Text/Unidecode.pm
+     *
+     * @param string UTF-8 string to convert
+     *
+     * @author <hsivonen@iki.fi>
+     *
+     * @param string (default = ?) Character use if character unknown
+     *
+     * @return string US-ASCII string
+     */
     public static function utf8ToAscii($str, $unknown = '?')
     {
         static $UTF8_TO_ASCII;
 
-        if (strlen($str) == 0) {
+        if (strlen($str) === 0) {
             return;
         }
 
@@ -223,30 +258,48 @@ class Urlizer
 
         foreach ($chars as $i => $c) {
             $ud = 0;
-            if (ord($c{0})>=0 && ord($c{0})<=127) { continue; } // ASCII - next please
-            if (ord($c{0})>=192 && ord($c{0})<=223) { $ord = (ord($c{0})-192)*64 + (ord($c{1})-128); }
-            if (ord($c{0})>=224 && ord($c{0})<=239) { $ord = (ord($c{0})-224)*4096 + (ord($c{1})-128)*64 + (ord($c{2})-128); }
-            if (ord($c{0})>=240 && ord($c{0})<=247) { $ord = (ord($c{0})-240)*262144 + (ord($c{1})-128)*4096 + (ord($c{2})-128)*64 + (ord($c{3})-128); }
-            if (ord($c{0})>=248 && ord($c{0})<=251) { $ord = (ord($c{0})-248)*16777216 + (ord($c{1})-128)*262144 + (ord($c{2})-128)*4096 + (ord($c{3})-128)*64 + (ord($c{4})-128); }
-            if (ord($c{0})>=252 && ord($c{0})<=253) { $ord = (ord($c{0})-252)*1073741824 + (ord($c{1})-128)*16777216 + (ord($c{2})-128)*262144 + (ord($c{3})-128)*4096 + (ord($c{4})-128)*64 + (ord($c{5})-128); }
-            if (ord($c{0})>=254 && ord($c{0})<=255) { $chars{$i} = $unknown; continue; } //error
+            if (ord($c{0}) >= 0 && ord($c{0}) <= 127) {
+                continue;
+            } // ASCII - next please
+            if (ord($c{0}) >= 192 && ord($c{0}) <= 223) {
+                $ord = (ord($c{0}) - 192) * 64 + (ord($c{1}) - 128);
+            }
+            if (ord($c{0}) >= 224 && ord($c{0}) <= 239) {
+                $ord = (ord($c{0}) - 224) * 4096 + (ord($c{1}) - 128) * 64 + (ord($c{2}) - 128);
+            }
+            if (ord($c{0}) >= 240 && ord($c{0}) <= 247) {
+                $ord = (ord($c{0}) - 240) * 262144 + (ord($c{1}) - 128) * 4096 + (ord($c{2}) - 128) * 64 + (ord($c{3}) - 128);
+            }
+            if (ord($c{0}) >= 248 && ord($c{0}) <= 251) {
+                $ord = (ord($c{0}) - 248) * 16777216 + (ord($c{1}) - 128) * 262144 + (ord($c{2}) - 128) * 4096 + (ord($c{3}) - 128) * 64 + (ord($c{4}) - 128);
+            }
+            if (ord($c{0}) >= 252 && ord($c{0}) <= 253) {
+                $ord = (ord($c{0}) - 252) * 1073741824 + (ord($c{1}) - 128) * 16777216 + (ord($c{2}) - 128) * 262144 + (ord($c{3}) - 128) * 4096 + (ord($c{4}) - 128) * 64 + (ord($c{5}) - 128);
+            }
+            if (ord($c{0}) >= 254 && ord($c{0}) <= 255) {
+                $chars{$i}
+                = $unknown;
+                continue;
+            } //error
 
             $bank = $ord >> 8;
 
-            if (!array_key_exists($bank, (array)$UTF8_TO_ASCII)) {
-                $bankfile = __DIR__. '/data/'. sprintf("x%02x",$bank).'.php';
+            if (!array_key_exists($bank, (array) $UTF8_TO_ASCII)) {
+                $bankfile = __DIR__.'/data/'.sprintf('x%02x', $bank).'.php';
                 if (file_exists($bankfile)) {
                     include $bankfile;
                 } else {
-                    $UTF8_TO_ASCII[$bank] = array();
+                    $UTF8_TO_ASCII[$bank] = [];
                 }
             }
 
             $newchar = $ord & 255;
             if (array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
-                $chars{$i} = $UTF8_TO_ASCII[$bank][$newchar];
+                $chars{$i}
+                = $UTF8_TO_ASCII[$bank][$newchar];
             } else {
-                $chars{$i} = $unknown;
+                $chars{$i}
+                = $unknown;
             }
         }
 
@@ -254,23 +307,26 @@ class Urlizer
     }
 
     /**
-     * Does not transliterate correctly eastern languages
+     * Does not transliterate correctly eastern languages.
      *
      * @param string $text
      * @param string $separator
+     *
      * @return string
      */
     public static function urlize($text, $separator = '-')
     {
         $text = self::unaccent($text);
+
         return self::postProcessText($text, $separator);
     }
 
     /**
-     * Uses transliteration tables to convert any kind of utf8 character
+     * Uses transliteration tables to convert any kind of utf8 character.
      *
      * @param string $text
      * @param string $separator
+     *
      * @return string $text
      */
     public static function transliterate($text, $separator = '-')
@@ -278,18 +334,23 @@ class Urlizer
         if (preg_match('/[\x80-\xff]/', $text) && self::validUtf8($text)) {
             $text = self::utf8ToAscii($text);
         }
+
         return self::postProcessText($text, $separator);
     }
 
     /**
-    * Tests a string as to whether it's valid UTF-8 and supported by the
-    * Unicode standard
-    * Note: this function has been modified to simple return true or false
-    * @author <hsivonen@iki.fi>
-    * @param string UTF-8 encoded string
-    * @return boolean true if valid
-    * @see http://hsivonen.iki.fi/php-utf8/
-    */
+     * Tests a string as to whether it's valid UTF-8 and supported by the
+     * Unicode standard
+     * Note: this function has been modified to simple return true or false.
+     *
+     * @author <hsivonen@iki.fi>
+     *
+     * @param string UTF-8 encoded string
+     *
+     * @return bool true if valid
+     *
+     * @see http://hsivonen.iki.fi/php-utf8/
+     */
     public static function validUtf8($str)
     {
         $mState = 0;     // cached expected number of octets after the current octet
@@ -300,31 +361,31 @@ class Urlizer
         $len = strlen($str);
         for ($i = 0; $i < $len; $i++) {
             $in = ord($str{$i});
-            if ($mState == 0) {
+            if ($mState === 0) {
                 // When mState is zero we expect either a US-ASCII character or a
                 // multi-octet sequence.
-                if (0 == (0x80 & ($in))) {
+                if (0 === (0x80 & ($in))) {
                     // US-ASCII, pass straight through.
                     $mBytes = 1;
-                } elseif (0xC0 == (0xE0 & ($in))) {
+                } elseif (0xC0 === (0xE0 & ($in))) {
                     // First octet of 2 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x1F) << 6;
                     $mState = 1;
                     $mBytes = 2;
-                } elseif (0xE0 == (0xF0 & ($in))) {
+                } elseif (0xE0 === (0xF0 & ($in))) {
                     // First octet of 3 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x0F) << 12;
                     $mState = 2;
                     $mBytes = 3;
-                } elseif (0xF0 == (0xF8 & ($in))) {
+                } elseif (0xF0 === (0xF8 & ($in))) {
                     // First octet of 4 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x07) << 18;
                     $mState = 3;
                     $mBytes = 4;
-                } elseif (0xF8 == (0xFC & ($in))) {
+                } elseif (0xF8 === (0xFC & ($in))) {
                     /* First octet of 5 octet sequence.
                     *
                     * This is illegal because the encoded codepoint must be either
@@ -337,7 +398,7 @@ class Urlizer
                     $mUcs4 = ($mUcs4 & 0x03) << 24;
                     $mState = 4;
                     $mBytes = 5;
-                } elseif (0xFC == (0xFE & ($in))) {
+                } elseif (0xFC === (0xFE & ($in))) {
                     // First octet of 6 octet sequence, see comments for 5 octet sequence.
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 1) << 30;
@@ -352,27 +413,27 @@ class Urlizer
             } else {
                 // When mState is non-zero, we expect a continuation of the multi-octet
                 // sequence
-                if (0x80 == (0xC0 & ($in))) {
+                if (0x80 === (0xC0 & ($in))) {
                     // Legal continuation.
                     $shift = ($mState - 1) * 6;
                     $tmp = $in;
                     $tmp = ($tmp & 0x0000003F) << $shift;
                     $mUcs4 |= $tmp;
-                    /**
+                    /*
                     * End of the multi-octet sequence. mUcs4 now contains the final
                     * Unicode codepoint to be output
                     */
-                    if (0 == --$mState) {
+                    if (0 === --$mState) {
                         /*
                         * Check for illegal sequences and codepoints.
                         */
                         // From Unicode 3.1, non-shortest form is illegal
-                        if (((2 == $mBytes) && ($mUcs4 < 0x0080)) ||
-                            ((3 == $mBytes) && ($mUcs4 < 0x0800)) ||
-                            ((4 == $mBytes) && ($mUcs4 < 0x10000)) ||
+                        if (((2 === $mBytes) && ($mUcs4 < 0x0080)) ||
+                            ((3 === $mBytes) && ($mUcs4 < 0x0800)) ||
+                            ((4 === $mBytes) && ($mUcs4 < 0x10000)) ||
                             (4 < $mBytes) ||
                             // From Unicode 3.2, surrogate characters are illegal
-                            (($mUcs4 & 0xFFFFF800) == 0xD800) ||
+                            (($mUcs4 & 0xFFFFF800) === 0xD800) ||
                             // Codepoints outside the Unicode range are illegal
                             ($mUcs4 > 0x10FFFF)
                         ) {
@@ -384,7 +445,7 @@ class Urlizer
                         $mBytes = 1;
                     }
                 } else {
-                    /**
+                    /*
                     *((0xC0 & (*in) != 0x80) && (mState != 0))
                     * Incomplete multi-octet sequence.
                     */
@@ -392,14 +453,16 @@ class Urlizer
                 }
             }
         }
+
         return true;
     }
 
     /**
-     * Cleans up the text and adds separator
+     * Cleans up the text and adds separator.
      *
      * @param string $text
      * @param string $separator
+     *
      * @return string
      */
     private static function postProcessText($text, $separator)

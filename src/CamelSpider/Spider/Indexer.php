@@ -1,67 +1,70 @@
 <?php
 
 /*
-* This file is part of the CamelSpider package.
-*
-* (c) Gilmar Pupo <g@g1mr.com>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
 
 namespace CamelSpider\Spider;
 
-use CamelSpider\Entity\Link,
-    CamelSpider\Entity\InterfaceLink,
-    CamelSpider\Entity\Document,
-    CamelSpider\Entity\Pool,
-    CamelSpider\Entity\InterfaceSubscription,
-    CamelSpider\Spider\SpiderAsserts as a;
+use CamelSpider\Entity\Document;
+use CamelSpider\Entity\InterfaceLink;
+use CamelSpider\Entity\InterfaceSubscription;
+use CamelSpider\Entity\Link;
+use CamelSpider\Entity\Pool;
+use CamelSpider\Spider\SpiderAsserts as a;
 
 /**
- * Process every subscription
-*/
+ * Process every subscription.
+ */
 class Indexer extends AbstractSpider
 {
     protected $name = 'Indexer';
 
     /**
-    * @param \Goutte\Client Goutte $goutte Crawler Goutte
-    * @param InterfaceCache $cache A class facade for Zend Cache
-    * @param InterfaceFeedReader $feedReader A Zend Feed Reader Object
-    * @param Monolog $logger Object to write logs (in realtime with low memory usage!)
-    * @param array $config Overload of default configurations in the constructor
-    **/
+     * @param \Goutte\Client Goutte $goutte     Crawler Goutte
+     * @param InterfaceCache        $cache      A class facade for Zend Cache
+     * @param InterfaceFeedReader   $feedReader A Zend Feed Reader Object
+     * @param Monolog               $logger     Object to write logs (in realtime with low memory usage!)
+     * @param array                 $config     Overload of default configurations in the constructor
+     **/
     public function __construct(
         \Goutte\Client $goutte = null,
         InterfaceCache $cache = null,
         InterfaceFeedReader $feedReader = null,
         $logger = null,
         array $config = null
-    )
-    {
-        if (is_null($goutte))
-            $goutte = new \Goutte\Client;
+    ) {
+        if (is_null($goutte)) {
+            $goutte = new \Goutte\Client();
+        }
 
         $this->setTime('total');
         $this->goutte = $goutte;
         $this->logger = $logger;
         $this->feedReader = $feedReader;
         $this->cache = $cache;
-        parent::__construct(array(), $config);
+        parent::__construct([], $config);
 
         return $this;
     }
 
     /**
-     * Collect links in rss and atom feed
+     * Collect links in rss and atom feed.
      *
      * @return int
      */
     public function collectLinksWithZendFeedReader(InterfaceFeedReader $reader)
     {
-        foreach($reader->getLinks()->toArray() as $link) {
-            if($this->checkLimit()){
+        foreach ($reader->getLinks()->toArray() as $link) {
+            if ($this->checkLimit()) {
                 $this->hyperlinks +=  $this->addLink($link);
             }
         }
@@ -71,7 +74,7 @@ class Indexer extends AbstractSpider
 
     /**
      * Método principal que faz indexação
-     * Main method for indexing
+     * Main method for indexing.
      *
      * @param CamelSpider\Entity\InterfaceSubscription $subscription
      */
@@ -102,16 +105,14 @@ class Indexer extends AbstractSpider
     protected function addLink(Link $link)
     {
         if (!$this->subscription->insideScope($link)) {
-
             $this->logger(
                 'outside the scope'
-                    . "\n"
-                    . '['
-                    . $this->subscription->getDomainString()
-                    . "]\n["
-                    . $link->get('href')
-                    . ']'
-                ,'info', 5);
+                    ."\n"
+                    .'['
+                    .$this->subscription->getDomainString()
+                    ."]\n["
+                    .$link->get('href')
+                    .']', 'info', 5);
 
             return 0;
         }
@@ -123,7 +124,7 @@ class Indexer extends AbstractSpider
             return 0;
         }
 
-        $this->logger('Check Cache for id:' . $link->getId('string'), 'info', 5);
+        $this->logger('Check Cache for id:'.$link->getId('string'), 'info', 5);
 
         //Prevents duplicates
         if ($this->requests > 0 && $this->cache->isObject($link->getId('string'))) {
@@ -142,14 +143,14 @@ class Indexer extends AbstractSpider
     {
         $URI = $target->getHref();
         $type = 'html';
-        if($target instanceof InterfaceSubscription) {
-            $this->logger("Subscription Type: " . $target->getSourceType());
+        if ($target instanceof InterfaceSubscription) {
+            $this->logger('Subscription Type: '.$target->getSourceType());
             $type = $target->getSourceType();
         }
 
         try {
-            if(!SpiderAsserts::isDocumentHref($URI)){
-                $this->logger('URI wrong:[' . $URI . ']', 'err', 3);
+            if (!SpiderAsserts::isDocumentHref($URI)) {
+                $this->logger('URI wrong:['.$URI.']', 'err', 3);
                 $this->pool->errLink($target, 'invalid URL');
 
                 return false;
@@ -157,20 +158,19 @@ class Indexer extends AbstractSpider
 
             // verify that this has been processed
             if (!$target instanceof InterfaceSubscription && $this->isDone($URI)) {
-                $this->logger('URI is Done:[' . $URI . ']', 'info', 1);
+                $this->logger('URI is Done:['.$URI.']', 'info', 1);
 
                 return false;
             }
 
             try {
                 $crawler = $this->getCrawler($URI, 'GET', $type);
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 $this->logger('Collect Exception', 'err', 3);
                 $this->logger($e->getMessage(), 'err', 3);
-                if($this->requests === 0){
+                if ($this->requests === 0) {
                     $this->errors++;
-                    throw new \Exception ('Error in the first request:' . $e->getMessage());
+                    throw new \Exception('Error in the first request:'.$e->getMessage());
                 }
             }
 
@@ -182,12 +182,12 @@ class Indexer extends AbstractSpider
             }
 
             if (!$target instanceof InterfaceSubscription) {
-                if(
+                if (
                     DocumentManager::isFresh(
                         $this->getBody(),
                         $target, $this->getSubscription()
                     )
-                ){
+                ) {
                     $target->setDocument(
                         $this->getCurrentUri(),
                         clone $crawler,
@@ -206,7 +206,7 @@ class Indexer extends AbstractSpider
                 $this->logger('go to the scan more links!', 'info', 5);
                 try {
                     $target->set('hyperlinks', $this->collectLinks($crawler, $type));
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger($e->getMessage(), 'err');
                     $this->errors++;
                 }
@@ -214,21 +214,19 @@ class Indexer extends AbstractSpider
 
             $this->logger(
                 'saving object on cache, with id:'
-                    . $target->getId('string'), 'info', 5
+                    .$target->getId('string'), 'info', 5
             );
             $this->pool->save($target);
             $this->success++;
 
             return true;
-        }
-        catch (\Zend\Http\Exception\InvalidArgumentException $e) {
-            $this->logger( 'Invalid argument on [' . $URI . ']', 'err');
+        } catch (\Zend\Http\Exception\InvalidArgumentException $e) {
+            $this->logger('Invalid argument on ['.$URI.']', 'err');
             $this->pool->errLink($target, 'invalid argument on HTTP request');
             $this->errors++;
-            throw new \Exception ('Invalid argument');
-        }
-        catch (\Zend\Http\Client\Adapter\Exception\RuntimeException $e) {
-            $this->logger( 'Http Client Runtime error on  [' . $URI . ']', 'err');
+            throw new \Exception('Invalid argument');
+        } catch (\Zend\Http\Client\Adapter\Exception\RuntimeException $e) {
+            $this->logger('Http Client Runtime error on  ['.$URI.']', 'err');
             $this->pool->errLink($target, 'Runtime error on Http Client Adaper');
             $this->errors++;
 
@@ -237,14 +235,14 @@ class Indexer extends AbstractSpider
     }
 
     /**
-     * Factory method of a client mode
+     * Factory method of a client mode.
      *
      * @return int
      */
     protected function collectLinks($obj, $mode = 'crawler')
     {
         $this->logger(
-            'Coletando links em modo [' . $mode . ']', 'info', 4
+            'Coletando links em modo ['.$mode.']', 'info', 4
         );
         switch ($mode) {
             case 'crawler':
@@ -260,7 +258,7 @@ class Indexer extends AbstractSpider
     }
 
     /**
-     * Collect links in simple HTML
+     * Collect links in simple HTML.
      *
      * @return int Count of links inside the document
      */
@@ -275,10 +273,10 @@ class Indexer extends AbstractSpider
 
         $this->logger(
             'Number of links founded in request #'
-            . $this->requests
-            . ':'
-            . $aCollection->count()
-            . ' with Goutte Crawler',
+            .$this->requests
+            .':'
+            .$aCollection->count()
+            .' with Goutte Crawler',
             'info',
             5
         );
@@ -297,10 +295,10 @@ class Indexer extends AbstractSpider
     {
         echo $this->getSummary();
 
-        return array(
+        return [
             'log'  => $this->getBackendLogger(),
             'pool' => $this->pool->getPackage(),
-        );
+        ];
     }
 
     protected function isDone($URI)
@@ -309,7 +307,6 @@ class Indexer extends AbstractSpider
 
         return $this->pool->isDone($link);
     }
-
 
     protected function ongoingProcessOutput()
     {
@@ -335,19 +332,18 @@ class Indexer extends AbstractSpider
             $this->ongoingProcessOutput();
             $this->logger(
                 "\n"
-                . '====== Request number #'
-                . $this->requests
-                . '======',
+                .'====== Request number #'
+                .$this->requests
+                .'======',
                 'info',
                 5
             );
 
-            try{
+            try {
                 $this->collect($link, $withLinks);
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 $this->errors++;
-                $this->logger('Can\'t collect:' . $e->getMessage(), 'err');
+                $this->logger('Can\'t collect:'.$e->getMessage(), 'err');
             }
 
             $this->logger($this->getSummary(), 'info', 5);
