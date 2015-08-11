@@ -1,16 +1,22 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Entity;
 
-use CamelSpider\Entity\AbstractSpiderEgg,
-    CamelSpider\Entity\InterfaceSubscription,
-    CamelSpider\Entity\InterfaceLink;
-
 /**
- * Armazena a fila de Links processados
+ * Armazena a fila de Links processados.
  *
- * @package     CamelSpider
- * @subpackage  Entity
  * @author      Gilmar Pupo <g@g1mr.com>
  **/
 class Pool extends AbstractSpiderEgg
@@ -20,24 +26,24 @@ class Pool extends AbstractSpiderEgg
     public function __construct($dependency = null)
     {
         if ($dependency) {
-            foreach (array('logger', 'cache') as $k) {
+            foreach (['logger', 'cache'] as $k) {
                 if (isset($dependency[$k])) {
                     $this->$k = $dependency[$k];
                 }
             }
         }
         $config = isset($dependency['config']) ? $dependency['config'] : null;
-        parent::__construct(array('relevancy'=>0), $config);
+        parent::__construct(['relevancy' => 0], $config);
     }
 
     /**
-     * Reduce for only Links waiting process
+     * Reduce for only Links waiting process.
      *
      * @return array
      */
     protected function filterWaiting()
     {
-        $a = array();
+        $a = [];
 
         foreach ($this->toArray() as $link) {
             if (!$link instanceof InterfaceSubscription && $link instanceof InterfaceLink && $link->isWaiting()) {
@@ -49,13 +55,13 @@ class Pool extends AbstractSpiderEgg
     }
 
     /**
-     * Reduce for only Links with process finished
+     * Reduce for only Links with process finished.
      *
      * @return array
      */
     public function getPackage()
     {
-        $a = array();
+        $a = [];
 
         foreach ($this->toArray() as $link) {
             if ($link instanceof InterfaceLink && !$link instanceof InterfaceSubscription && $link->isDone()) {
@@ -66,25 +72,24 @@ class Pool extends AbstractSpiderEgg
         return $a;
     }
 
-
     /**
      * @return array
      */
     public function getPool($mode)
     {
         $pool =  $this->filterWaiting();
-        if(count($pool) < 1)
-        {
-            $this->logger('Pool empty on the ' . $mode, 'info', 5);
+        if (count($pool) < 1) {
+            $this->logger('Pool empty on the '.$mode, 'info', 5);
+
             return false;
         }
-        $this->logger('Pool count:' . count($pool), 'info', 1);
+        $this->logger('Pool count:'.count($pool), 'info', 1);
 
         return $pool;
     }
 
     /**
-     * Check if link is processed
+     * Check if link is processed.
      */
     public function isDone(InterfaceLink $link)
     {
@@ -101,16 +106,15 @@ class Pool extends AbstractSpiderEgg
     }
 
     /**
-     * Adiciona/subscreve elemento na fila
+     * Adiciona/subscreve elemento na fila.
      */
     public function save(InterfaceLink $link)
     {
-
         if ($link instanceof InterfaceSubscription) {
             return false;
         }
 
-        if($link->isDone()){
+        if ($link->isDone()) {
             $this->cache->save($link->getId('string'), $link->toPackage());
         }
 
@@ -127,7 +131,7 @@ class Pool extends AbstractSpiderEgg
             $link->get('href')
             ."\n"
             .' marked with error.'
-            .'Cause: ' . $cause
+            .'Cause: '.$cause
             ."\n");
         $this->errors++;
     }

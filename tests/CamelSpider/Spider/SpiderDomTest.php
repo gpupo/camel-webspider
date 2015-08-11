@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
 class SpiderDomTest extends \PHPUnit_Framework_TestCase
@@ -32,7 +44,7 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
      */
     public function testOkIfDomElementIsConvertedToHtml(\DOMNode $node, $html)
     {
-       $this->AssertEquals($html, SpiderDom::toHtml($node));
+        $this->AssertEquals($html, SpiderDom::toHtml($node));
     }
 
     /**
@@ -65,13 +77,13 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
      */
     public function testHtmlToIntro($html, $text)
     {
-        foreach (array(4, strlen($text)) as $i) {
-           $this->AssertEquals(trim(mb_substr($text, 0, $i)), SpiderDom::htmlToIntro($html, $i));
-           $this->AssertEquals(trim(mb_substr($text, 0, $i)) . (strlen($text) > $i ? '...' : ''), SpiderDom::htmlToIntro($html, $i, '...'));
+        foreach ([4, strlen($text)] as $i) {
+            $this->AssertEquals(trim(mb_substr($text, 0, $i)), SpiderDom::htmlToIntro($html, $i));
+            $this->AssertEquals(trim(mb_substr($text, 0, $i)).(strlen($text) > $i ? '...' : ''), SpiderDom::htmlToIntro($html, $i, '...'));
         }
     }
 
-    /** 
+    /**
      * @dataProvider providerDirtyTags()
      */
     public function testRemoveDirtyAttrs($dirty, $expected)
@@ -79,7 +91,7 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
         $this->AssertEquals($expected, SpiderDom::removeDirtyAttrs($dirty));
     }
 
-    /** 
+    /**
      * @dataProvider providerCleanTags()
      */
     public function testNotRemoveDirtyAttrs($clean)
@@ -87,7 +99,7 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
         $this->AssertEquals($clean, SpiderDom::removeDirtyAttrs($clean));
     }
 
-    /** 
+    /**
      * @dataProvider providerTrashTags()
      */
     public function testRemoveTrashBlock($block, $expected)
@@ -97,61 +109,61 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
 
     public function providerWrongHtml()
     {
-        return array(
-            array('</html>wrong'),
-            array('</body>html'),
-            array('</span>to'),
-            array('</div>test')
-        );
+        return [
+            ['</html>wrong'],
+            ['</body>html'],
+            ['</span>to'],
+            ['</div>test'],
+        ];
     }
 
     public function providerTrashTags()
     {
-        return array(
-            array('Some 
+        return [
+            ['Some
                 <script language="javascript" type="text/javascript"><![CDATA[
                 // krux kseg and kuid from krux header tag
-                ]]></script>','Some'),
-            array('Some <iframe src="about:blank" id="cnnusercomment" name="cnnusercomment"
+                ]]></script>','Some'],
+            ['Some <iframe src="about:blank" id="cnnusercomment" name="cnnusercomment"
                 marginheight="0" marginwidth="0" style="position: absolute; bottom: 0pt; left:
-                0pt;" width="1" scrolling="no" frameborder="0" height="1"/>', 'Some'),
-            array('Text<style type="text/css">.fake{}</style>', 'Text'),
-            array('Text<noscript>Trash</noscript>', 'Text')
-        );
+                0pt;" width="1" scrolling="no" frameborder="0" height="1"/>', 'Some'],
+            ['Text<style type="text/css">.fake{}</style>', 'Text'],
+            ['Text<noscript>Trash</noscript>', 'Text'],
+        ];
     }
 
     public function providerDirtyTags()
     {
-        return array(
-            array('<div class="Newstime" 
+        return [
+            ['<div class="Newstime"
                 oncontextmenu="return false"
                 ondragstart="return false"
-                onselectstart="return false" 
-                onselect="document.selection.empty()" 
-                oncopy="document.selection.empty()" 
-                onbeforecopy="return false">', '<div class="Newstime">'),
-            array('<div onclick="something">Some</div>', '<div>Some</div>')
-        );
+                onselectstart="return false"
+                onselect="document.selection.empty()"
+                oncopy="document.selection.empty()"
+                onbeforecopy="return false">', '<div class="Newstime">'],
+            ['<div onclick="something">Some</div>', '<div>Some</div>'],
+        ];
     }
 
     public function providerCleanTags()
     {
-        return array(
-            array('<a href="#true">True Link</a>'),
-            array('<p style="color:#000">Text</p>'), 
-        );
+        return [
+            ['<a href="#true">True Link</a>'],
+            ['<p style="color:#000">Text</p>'],
+        ];
     }
 
     public function providerHtmlStories()
     {
-        $a = array();
-        foreach (array(
+        $a = [];
+        foreach ([
             'text example',
             'Word sample for test',
             'floo fly flo fi',
             'boot for both',
-            'fail A estrutura de um shopping em construção desabou e atingiu o auditório da Universidade Metodista'
-            )
+            'fail A estrutura de um shopping em construção desabou e atingiu o auditório da Universidade Metodista',
+            ]
             as $t) {
             $a = array_merge($a, $this->makeHtmlElements($t));
         }
@@ -161,8 +173,8 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
 
     public function providerHtmlElements()
     {
-        $a = array();
-        foreach (array('text example', 'other example', 'some text', 'lets play') as $t) {
+        $a = [];
+        foreach (['text example', 'other example', 'some text', 'lets play'] as $t) {
             $a = array_merge($a, $this->makeHtmlElements($t));
         }
 
@@ -171,11 +183,11 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
 
     public function makeHtmlElements($txt)
     {
-        $html = $txt ;
-        $a = array();
+        $html = $txt;
+        $a = [];
         foreach (SpiderDom::$stripedTags as $e) {
-            $html = '<' . $e . '>'. $html . '</' . $e . '>' . "\n";
-            $a[] = array($html , $txt);
+            $html = '<'.$e.'>'.$html.'</'.$e.'>'."\n";
+            $a[] = [$html , $txt];
         }
 
         return $a;
@@ -183,14 +195,14 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
 
     public function providerDomElements()
     {
-        $array = array();
+        $array = [];
         foreach ($this->getHtmlCollection() as $html) {
             $html = trim($html);
             if (!empty($html)) {
                 $doc = $this->getDoc($html);
                 $expectedHtml = $this->getHtmlExpected($html);
-                $array[] = array($doc, $expectedHtml);
-                $array[] = array($doc->documentElement, $expectedHtml);
+                $array[] = [$doc, $expectedHtml];
+                $array[] = [$doc->documentElement, $expectedHtml];
             }
         }
 
@@ -199,9 +211,8 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
 
     public function providerDomElementsToText()
     {
-        $array = array();
-        foreach (array('some', 'text', 'to', 'test') as $text) {
-
+        $array = [];
+        foreach (['some', 'text', 'to', 'test'] as $text) {
             $len = mb_strlen($text);
             $html = <<<EOF
 <html>
@@ -229,8 +240,8 @@ EOF;
 EOF;
 
             $doc = $this->getDoc($html);
-            $array[] = array($doc, $len);
-            $array[] = array($doc->documentElement, $len);
+            $array[] = [$doc, $len];
+            $array[] = [$doc->documentElement, $len];
         }
 
         return $array;
@@ -238,9 +249,9 @@ EOF;
 
     public function getHtmlExpected($html)
     {
-        foreach (array('body','html') as $tag) {
-            if (stripos($html, '<' . $tag) === false) {
-                $html = '<' . $tag . '>'. $html . '</'. $tag .'>';
+        foreach (['body', 'html'] as $tag) {
+            if (stripos($html, '<'.$tag) === false) {
+                $html = '<'.$tag.'>'.$html.'</'.$tag.'>';
             }
         }
 

@@ -1,13 +1,25 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
-class SpiderAssertsTest extends \PHPUnit_Framework_TestCase {
-
+class SpiderAssertsTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider providerDocumentHref
      */
-    public function testValidDocumentHref($input) 
+    public function testValidDocumentHref($input)
     {
         $this->assertTrue(SpiderAsserts::isDocumentHref($input));
     }
@@ -15,27 +27,27 @@ class SpiderAssertsTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider providerInvalidDocumentHref
      */
-    public function testInvalidDocumentHref($input) 
+    public function testInvalidDocumentHref($input)
     {
         $this->assertFalse(SpiderAsserts::isDocumentHref($input));
     }
 
-    public function providerDocumentHref() 
+    public function providerDocumentHref()
     {
-        return array(
-            array('magica.html'),
-            array('http://www.gpupo.com/about'),
-            array('/var/dev/null.html')
-        );
+        return [
+            ['magica.html'],
+            ['http://www.gpupo.com/about'],
+            ['/var/dev/null.html'],
+        ];
     }
 
-    public function providerInvalidDocumentHref() 
+    public function providerInvalidDocumentHref()
     {
-        return array(
-            array('mailto:g@g1mr.com'),
-            array('javascript("void(0)")'),
-            array('#hashtag')
-        );
+        return [
+            ['mailto:g@g1mr.com'],
+            ['javascript("void(0)")'],
+            ['#hashtag'],
+        ];
     }
 
     /**
@@ -65,28 +77,28 @@ class SpiderAssertsTest extends \PHPUnit_Framework_TestCase {
     public function testContainNull()
     {
         $this->assertTrue(SpiderAsserts::containKeywords('Somewhere in her smile she knows', null));
-        $this->assertTrue(SpiderAsserts::containKeywords('Somewhere in her smile she knows', array()));
+        $this->assertTrue(SpiderAsserts::containKeywords('Somewhere in her smile she knows', []));
         $this->assertFalse(SpiderAsserts::containKeywords('Somewhere in her smile she knows', null, false));
-        $this->assertFalse(SpiderAsserts::containKeywords('Somewhere in her smile she knows', array(), false));
+        $this->assertFalse(SpiderAsserts::containKeywords('Somewhere in her smile she knows', [], false));
     }
 
     public function providerContainKeywords()
     {
-        $array = array(
-            array('Something in the way she moves', array('way')),
-            array('Attracts me like no other lover', array('lover')),
-            array('Something in the way she woos me',array('something')),
-            array('I dont want to leave her now', array('other', 'want')),
-        );
+        $array = [
+            ['Something in the way she moves', ['way']],
+            ['Attracts me like no other lover', ['lover']],
+            ['Something in the way she woos me',['something']],
+            ['I dont want to leave her now', ['other', 'want']],
+        ];
 
         //words
         foreach (explode(' ', $this->getBigText()) as $word) {
-            $array[] = array($this->getBigText(),array('constituinte', 'firebug', 'metallica', $word));
+            $array[] = [$this->getBigText(),['constituinte', 'firebug', 'metallica', $word]];
         }
 
         //half words
         foreach (explode(' ', 'cordos teresse mum rust niciati cida') as $word) {
-            $array[] = array($this->getBigText(),array('constituinte', 'firebug', 'metallica', $word));
+            $array[] = [$this->getBigText(),['constituinte', 'firebug', 'metallica', $word]];
         }
 
         return $array;
@@ -94,18 +106,18 @@ class SpiderAssertsTest extends \PHPUnit_Framework_TestCase {
 
     public function providerNotContainKeywords()
     {
-        return array(
-            array('Something in the way she moves', array('love', 'sex')),
-            array('Attracts me like no other lover', array('bullet', 'gun')),
-            array('Something in the way she woos me',array('route', 'bad')),
-            array('I dont want to leave her now', array('other', 'past')),
-            array('You know I believe and how', array()),
-        );
+        return [
+            ['Something in the way she moves', ['love', 'sex']],
+            ['Attracts me like no other lover', ['bullet', 'gun']],
+            ['Something in the way she woos me',['route', 'bad']],
+            ['I dont want to leave her now', ['other', 'past']],
+            ['You know I believe and how', []],
+        ];
     }
 
     private function getBigText()
     {
-       return <<<EOF
+        return <<<EOF
 O documento foi assinado pelo presidente da Fapesp, Celso Lafer, e pelo diretor da GSK para a América Latina e o Caribe, Rogério Rocha Ribeiro.
 A cerimônia teve ainda a participação do ministro da Saúde do Reino Unido, Simon Burns, do diretor-presidente da Fapesp, Ricardo Renzo Brentani,
 e do cônsul-geral britânico, John Dodrell.
@@ -114,8 +126,5 @@ no país, o Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNP
 "Há alguns anos a FAPESP se empenha na dimensão da internacionalização, seja por meio do aumento das cooperações com o setor privado,
 seja a partir de acordos de interesse comum entre nações.
 EOF;
-
     }
-
-
 }

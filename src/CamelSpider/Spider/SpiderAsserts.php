@@ -1,14 +1,25 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
-use Respect\Validation\Validator as v,
-    CamelSpider\Entity\InterfaceLink,
-    Zend\Uri\Uri;
+use CamelSpider\Entity\InterfaceLink;
+use Respect\Validation\Validator as v;
+use Zend\Uri\Uri;
 
 class SpiderAsserts
 {
-
     public static function containKeywords($txt, $keywords = null, $ifNull = true)
     {
         if (!is_array($keywords) || count($keywords) < 1) {
@@ -25,18 +36,18 @@ class SpiderAsserts
 
     public static function isDocumentHref($href)
     {
-        if(
+        if (
             empty($href)                            ||
             stripos($href, 'mail') !== false        ||
             stripos($href, '.pdf') !== false        ||
             stripos($href, '.ppt') !== false        ||
-            substr($href, 0,10) == 'javascript'     ||
-            substr($href, 0, 1) == '#'
+            substr($href, 0, 10) === 'javascript'     ||
+            substr($href, 0, 1) === '#'
         ) {
             return false;
         }
-        foreach (array('%20', '=') as $c) {
-            if (stripos($href, $c . 'http://') !== false) {
+        foreach (['%20', '='] as $c) {
+            if (stripos($href, $c.'http://') !== false) {
                 return false;
             }
         }
@@ -49,11 +60,8 @@ class SpiderAsserts
         return false;
     }
 
-
     public static function isDocumentLink(InterfaceLink $link)
     {
         return self::isDocumentHref($link->getHref());
     }
-
 }
-

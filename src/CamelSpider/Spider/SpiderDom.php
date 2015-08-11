@@ -1,21 +1,31 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
 /**
- * Methods for DOMElements
+ * Methods for DOMElements.
  *
- * @package     CamelSpider
- * @subpackage  Spider
  * @author      Gilmar Pupo <g@g1mr.com>
+ *
  * @see         http://www.php.net/manual/en/class.domelement.php
  */
-
 class SpiderDom
 {
     const rootTag = 'rootTag';
 
-    public static $stripedTags = array(
+    public static $stripedTags = [
         'b',
         'span',
         'a',
@@ -30,30 +40,36 @@ class SpiderDom
         'tr',
         'table',
         'body',
-        'html'
-    );
+        'html',
+    ];
 
     /**
      * Verifica se um DomElement é candidato a ser o container
-     * de conteúdo
+     * de conteúdo.
+     *
      * @todo utilizar configuracões injetadas
      */
     public static function containerCandidate($node)
     {
-        if(self::textLen($node) < 500)
+        if (self::textLen($node) < 500) {
             return false;
+        }
 
-        if(self::substr_count($node, '              ') > 5)
+        if (self::substr_count($node, '              ') > 5) {
             return false;
+        }
 
-        if(self::substr_count($node, '"') > 30)
+        if (self::substr_count($node, '"') > 30) {
             return false;
+        }
 
-        if(self::countInnerTags($node, 'a') > 5)
+        if (self::countInnerTags($node, 'a') > 5) {
             return false;
+        }
 
-        if(self::countInnerTags($node, 'javascript') > 2)
+        if (self::countInnerTags($node, 'javascript') > 2) {
             return false;
+        }
 
         return true;
     }
@@ -65,29 +81,31 @@ class SpiderDom
         return $a->length;
     }
 
-    public static function getGreater(\DOMElement $a, \DOMElement $b = NULL, $options = array())
+    public static function getGreater(\DOMElement $a, \DOMElement $b = null, $options = [])
     {
-        if(!$b)
+        if (!$b) {
             return $a;
+        }
 
-        if(self::textLen($a) < self::textLen($b))
+        if (self::textLen($a) < self::textLen($b)) {
             return $b;
+        }
 
         return $a;
-   }
+    }
 
     /**
-     * Process node and generate his html
+     * Process node and generate his html.
      */
     public static function getNodeHtml(\DOMDocument $doc)
     {
         $html = trim(str_replace('<?xml version="1.0"?>', '', $doc->saveXML()));
 
-        if (stripos($html,'<html') === false) {
+        if (stripos($html, '<html') === false) {
             $html = str_replace(self::rootTag, 'html', $html);
         } else {
             $html = str_replace(
-                array('<' . self::rootTag . '>', '</'. self::rootTag . '>'),
+                ['<'.self::rootTag.'>', '</'.self::rootTag.'>'],
                 '',
                 $html
             );
@@ -97,7 +115,7 @@ class SpiderDom
     }
 
     /**
-     * Convert html to DomElement
+     * Convert html to DomElement.
      */
     public static function htmlToDomElement($html)
     {
@@ -118,26 +136,28 @@ class SpiderDom
         return $element;
     }
 
-    public static function htmlToIntro($html,$length,$end='',$encoding='UTF-8')
+    public static function htmlToIntro($html, $length, $end = '', $encoding = 'UTF-8')
     {
         $string = static::strip_tags($html);
-        $len = mb_strlen($string,$encoding);
+        $len = mb_strlen($string, $encoding);
         if ($len <= $length) {
             return $string;
         } else {
-            $return = mb_substr($string,0,$length,$encoding);
+            $return = mb_substr($string, 0, $length, $encoding);
+
             return (preg_match('/^(.*[^\s])\s+[^\s]*$/', $return, $matches) ? $matches[1] : $return).$end;
         }
     }
 
     /**
-     * Transform html to plain text
+     * Transform html to plain text.
      *
      * @return string $text
      */
     public static function htmlToText($html)
     {
         $text = static::strip_tags($html);
+
         return $text;
     }
 
@@ -149,8 +169,8 @@ class SpiderDom
             $node = $node->documentElement;
         }
 
-        $doc = new \DOMDocument;
-        $doc->loadXML('<' . $rootTag . '></'. $rootTag . '>');
+        $doc = new \DOMDocument();
+        $doc->loadXML('<'.$rootTag.'></'.$rootTag.'>');
         $docNode = $doc->importNode($node, true);
         $doc->documentElement->appendChild($docNode);
 
@@ -169,12 +189,12 @@ class SpiderDom
      * Remove attributes from hell!
      *
      * @param string $content is a html
-     * @param array $attrs is a list of attributes to clean
+     * @param array  $attrs   is a list of attributes to clean
      */
     public static function removeDirtyAttrs($content, $attrs = null)
     {
         if (is_null($attrs)) {
-            $attrs = array(
+            $attrs = [
                 'oncontextmenu',
                 'ondragstart',
                 'onselectstart',
@@ -190,18 +210,18 @@ class SpiderDom
                 'style',
                 'class',
 
-            );
+            ];
         }
 
         foreach ($attrs  as $a) {
-            $content = preg_replace("/" . $a . '=\s*"[^\"]*\"/i', '', $content);
+            $content = preg_replace('/'.$a.'=\s*"[^\"]*\"/i', '', $content);
         }
 
         $i = 0;
         while ($i < 10) {
             $content = str_replace('  ', ' ',  $content);
             $content = str_replace(' >', '>', $content);
-            $content = str_replace(PHP_EOL . '>', '>', $content);
+            $content = str_replace(PHP_EOL.'>', '>', $content);
             $i++;
         }
 
@@ -210,10 +230,10 @@ class SpiderDom
 
     public static function removeTag($tag, $content)
     {
-        foreach (array(
-                     '/<'. $tag . '.*?<\/' . $tag . '>/is',
-                     '/<'. $tag . '.*?\/>/is'
-                 ) as $expr) {
+        foreach ([
+                     '/<'.$tag.'.*?<\/'.$tag.'>/is',
+                     '/<'.$tag.'.*?\/>/is',
+                 ] as $expr) {
             $content = preg_replace($expr, '', $content);
         }
 
@@ -222,7 +242,7 @@ class SpiderDom
 
     public static function removeTrashBlock($content)
     {
-        foreach (array('iframe', 'script', 'style', 'noscript') as $tag) {
+        foreach (['iframe', 'script', 'style', 'noscript'] as $tag) {
             $content = static::removeTag($tag, $content);
         }
 
@@ -238,29 +258,29 @@ class SpiderDom
     {
     }
 
-    public static function saveTxtToFile(\DOMElement $node, $file, $title = NULL)
+    public static function saveTxtToFile(\DOMElement $node, $file, $title = null)
     {
-        return file_put_contents($file, $title . self::toText($node));
+        return file_put_contents($file, $title.self::toText($node));
     }
 
     public static function strip_tags($content, $allow = null)
     {
         $content = str_replace('&nbsp;', '', strip_tags($content, $allow));
-        preg_match_all("/<([^>]+)>/i",$allow,$tags,PREG_PATTERN_ORDER);
+        preg_match_all('/<([^>]+)>/i', $allow, $tags, PREG_PATTERN_ORDER);
 
         if (!$allow) {
             $allow = static::$stripedTags;
         }
 
-        foreach (array_merge($tags[1],static::$stripedTags)  as $tag){
-            $content = preg_replace("/<".$tag."[^>]*>/i","<".$tag.">",$content);
+        foreach (array_merge($tags[1], static::$stripedTags)  as $tag) {
+            $content = preg_replace('/<'.$tag.'[^>]*>/i', '<'.$tag.'>', $content);
         }
         //remove wrong tags
-        foreach (array_merge($tags[1],static::$stripedTags)  as $tag){
-            $content = str_ireplace("<".$tag."><".$tag.">", "<".$tag.">", $content);
+        foreach (array_merge($tags[1], static::$stripedTags)  as $tag) {
+            $content = str_ireplace('<'.$tag.'><'.$tag.'>', '<'.$tag.'>', $content);
         }
-        foreach (array('img') as $tag) {
-            $content = str_ireplace("<".$tag.">", '', $content);
+        foreach (['img'] as $tag) {
+            $content = str_ireplace('<'.$tag.'>', '', $content);
         }
 
         $content = trim($content);
@@ -277,6 +297,7 @@ class SpiderDom
      * Calcula a quantidade de texto que um DomElement possui.
      *
      * @param DomElement $node
+     *
      * @return int Minor count
      */
     public static function textLen($node)
@@ -293,7 +314,7 @@ class SpiderDom
     public static function toCleanHtml(\DOMNode $node)
     {
         //remove <head>
-        foreach (array('script', 'head') as $tag) {
+        foreach (['script', 'head'] as $tag) {
             $node = static::removeChild($node, $tag);
         }
 
@@ -301,7 +322,7 @@ class SpiderDom
     }
 
     /**
-     * Save an isolated node as html
+     * Save an isolated node as html.
      *
      * @return string HTML
      */
@@ -313,7 +334,8 @@ class SpiderDom
     }
 
     /**
-     * Convert HTML to plain text
+     * Convert HTML to plain text.
+     *
      * @see http://www.php.net/manual/en/class.domtext.php
      */
     public static function toText(\DOMNode $node, $mode = 'textContent')
@@ -345,16 +367,13 @@ class SpiderDom
             }
         } catch (\DOMException $e) {
             \error_log('Element <'
-                . $tag
-                . '> not found: '
-                . $e->getMessage()
-                . "\nHTML:"
-                . static::toHtml($node) , 4);
+                .$tag
+                .'> not found: '
+                .$e->getMessage()
+                ."\nHTML:"
+                .static::toHtml($node), 4);
         }
 
         return $node;
     }
 }
-
-
-

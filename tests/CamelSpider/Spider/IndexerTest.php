@@ -1,10 +1,21 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Spider;
 
 use Goutte\Client;
 use Zend\Http\Client as Zend_Http_Client;
-use Zend\Http\Response as Zend_Http_dResponse;
 
 class IndexerTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +24,7 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAuthToArray($auth, $len)
     {
-        $spider = new Indexer;
+        $spider = new Indexer();
         $auto = 3;
         $this->AssertEquals($len + $auto, count($spider->getAuthCredentials($auth)));
     }
@@ -23,7 +34,7 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoginForm($auth)
     {
-        $spider = new Indexer;
+        $spider = new Indexer();
         $credentials = $spider->getAuthCredentials($auth);
 
         $this->assertArrayHasKey('type', $credentials);
@@ -69,9 +80,9 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
 
     public function ProviderHellCookies()
     {
-        return array(
-            array('http://www.agricultura.gov.br/comunicacao/noticias/')
-        );
+        return [
+            ['http://www.agricultura.gov.br/comunicacao/noticias/'],
+        ];
     }
 
     /**
@@ -82,14 +93,14 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
         $client = new Client();
         //Test with absolute path
         foreach ($paths as $path) {
-            $uri = 'http://' . $host . $path;
+            $uri = 'http://'.$host.$path;
             $crawler = $client->request('GET', $uri);
             $this->assertEquals(200, $client->getResponse()->getStatus());
             $this->assertEquals($uri, $client->getRequest()->getUri());
         }
         //Test with relative path and get absolute URI
         foreach ($paths as $path) {
-            $uri = 'http://' . $host . $path;
+            $uri = 'http://'.$host.$path;
             $crawler = $client->request('GET', $path);
             $this->assertEquals(200, $client->getResponse()->getStatus());
             $this->assertEquals($uri, $client->getRequest()->getUri());
@@ -103,24 +114,24 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client();
         //Test with absolute path
-        $uri = 'http://' . $host . '/some' . rand();
+        $uri = 'http://'.$host.'/some'.rand();
         $crawler = $client->request('GET', $uri);
         $this->assertEquals(404, $client->getResponse()->getStatus());
     }
 
     public function providerNavigation()
     {
-        $a = array();
+        $a = [];
 
-        $a[] = array(
-            'host'  =>  'diversao.terra.com.br',
-            'paths' =>  array('/', '/tv/')
-        );
+        $a[] = [
+            'host'  => 'diversao.terra.com.br',
+            'paths' => ['/', '/tv/'],
+        ];
 
-        $a[] = array(
-            'host'  =>  'www.mozilla.org',
-            'paths' =>  array('/en-US/firefox/new/', '/en-US/firefox/features/', '/en-US/mobile/faq/')
-        );
+        $a[] = [
+            'host'  => 'www.mozilla.org',
+            'paths' => ['/en-US/firefox/new/', '/en-US/firefox/features/', '/en-US/mobile/faq/'],
+        ];
 
         return $a;
     }
@@ -129,11 +140,11 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
     {
         $s = '';
         $i = 0;
-        $a = array();
-        foreach (array('something', 'button', 'username', 'password', 'expected') as $n) {
-            $s .= '"'. $n . '":"' . $n . '"' . "\n";
+        $a = [];
+        foreach (['something', 'button', 'username', 'password', 'expected'] as $n) {
+            $s .= '"'.$n.'":"'.$n.'"'."\n";
             $i++;
-            $a[] = array($s, $i);
+            $a[] = [$s, $i];
         }
 
         return $a;

@@ -1,15 +1,26 @@
 <?php
 
+/*
+ * This file is part of gpupo/camel-webspider
+ *
+ * (c) Gilmar Pupo <g@g1mr.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * For more information, see
+ * <http://www.g1mr.com/camel-webspider/>.
+ */
+
 namespace CamelSpider\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-/** 
+/**
  * Este é um ovo :)
  * Ele abstrai métodos reusáveis entre a maior
- * parte dos objetos do projeto
+ * parte dos objetos do projeto.
  */
-
 class AbstractSpiderEgg extends ArrayCollection
 {
     protected $cache;
@@ -17,9 +28,9 @@ class AbstractSpiderEgg extends ArrayCollection
     protected $logger;
     protected $name;
 
-    public function __construct(array $array, array $config = NULL)
+    public function __construct(array $array, array $config = null)
     {
-        if($config) {
+        if ($config) {
             $this->set('config', new DoctineArrayCollection($config));
         }
 
@@ -28,19 +39,19 @@ class AbstractSpiderEgg extends ArrayCollection
 
     protected function transferDependency()
     {
-        return array(
+        return [
             'logger' => $this->logger,
             'cache'  => $this->cache,
-            'config' => $this->config
-        );
+            'config' => $this->config,
+        ];
     }
 
-    protected function getConfig($key, $defaultValue = NULL)
+    protected function getConfig($key, $defaultValue = null)
     {
-        if(
+        if (
             $this->config instanceof ArrayCollection
             && $config = $this->config->get($key)
-        ){
+        ) {
             return $config;
         }
 
@@ -48,15 +59,15 @@ class AbstractSpiderEgg extends ArrayCollection
     }
 
     /**
-     * Debug, like var_dump, but output on log
+     * Debug, like var_dump, but output on log.
      */
     protected function debugger($object, $info = 'DEBUGGER')
     {
         return $this->logger(
             "\n"
-            . $info
-            . ":\n"
-            . var_export($object, true),
+            .$info
+            .":\n"
+            .var_export($object, true),
             'echo',
             1
         );
@@ -67,7 +78,7 @@ class AbstractSpiderEgg extends ArrayCollection
      */
     protected function logger($string, $type = 'info', $level = 1)
     {
-        if ($type == 'echo') {
+        if ($type === 'echo') {
             echo $string;
             $type = 'info';
         }
@@ -76,7 +87,7 @@ class AbstractSpiderEgg extends ArrayCollection
             && $this->getConfig('log_level', 3) >= $level
         ) {
             return $this->logger->$type(
-                '#CamelSpider ' . $this->name . ':'  . $string
+                '#CamelSpider '.$this->name.':'.$string
             );
         }
     }
