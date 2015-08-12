@@ -28,6 +28,8 @@ class Indexer extends AbstractSpider
 {
     protected $name = 'Indexer';
 
+    protected $hyperlinks;
+
     /**
      * @param \Goutte\Client Goutte $goutte     Crawler Goutte
      * @param InterfaceCache        $cache      A class facade for Zend Cache
@@ -127,7 +129,7 @@ class Indexer extends AbstractSpider
         $this->logger('Check Cache for id:'.$link->getId('string'), 'info', 5);
 
         //Prevents duplicates
-        if ($this->requests > 0 && $this->cache->isObject($link->getId('string'))) {
+        if ($this->requests > 0 && $this->cache && $this->cache->isObject($link->getId('string'))) {
             $this->logger('cached', 'info', 5);
             $this->cached++;
 

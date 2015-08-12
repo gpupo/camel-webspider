@@ -33,10 +33,6 @@ de relevância, sendo que esta pontuação pode ser:
 
 A Camel Webspider é um componente a ser utilizado por uma aplicação que gerencie a base de assinaturas e receba o retorno do processamento para armazenamento em banco de dados.
 
-A Camel Webspider utiliza componentes do Zend Framework 2, Doctrine Common e Goutte, e presume que será instânciada dentro de um projeto com o autoloading corretamente configurado conforme a PRS-0.
-
-Queremos que a Camel Webspider seja uma Spider Web que supra necessidades de projetos em PHP 5.3.
-
 O [Camel Spider Bundle](http://github.com/gpupo/CamelSpiderBundle) integra a Camel Webspider ao Symfony 2 e gerencia as assinaturas e o cache de informações e neste projeto complementar você pode visualizar a implementação de componentes que a CamelSpider utiliza como dependency injection mas não os implementa por ser fora de seu escopo.
 
 ## Config
@@ -74,6 +70,24 @@ acessados diretamente do cache, pela aplicação que os utiliza.
 
 
 ## Instalação
+
+Linux / Mac OS X
+
+    sudo curl -LsS https://github.com/gpupo/camel-webspider/releases/download/1.1/camel-webspider.phar -o /usr/local/bin/camel-webspider;
+    sudo chmod a+x /usr/local/bin/camel-webspider;
+
+Windows
+
+    c:\> php -r "readfile('https://github.com/gpupo/camel-webspider/releases/download/1.1/camel-webspider.phar');" > camel-webspider
+
+
+Bastará executar ``camel-webspider``.
+
+## Comando
+
+    camel-webspider find -w www.example.com -k interest
+
+## Instalação como biblioteca
 
 Adicione o pacote ``camel-webspider`` ao seu projeto utilizando [composer](http://getcomposer.org):
 

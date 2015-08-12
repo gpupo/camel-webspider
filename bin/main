@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Gpupo\CamelWebspider\Factory;
+use Gpupo\CamelWebspider\Entity\FactorySubscription;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$app = new Application();
+
+$app->register('find')
+->setDescription('Search')
+->setDefinition([
+       new InputOption('website', 'w', InputOption::VALUE_REQUIRED),
+       new InputOption('keyword', 'k', InputOption::VALUE_REQUIRED),
+   ])
+->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
+    $dialog = $app->getHelperSet()->get('dialog');
+
+    $getParameter = function ($key, $extra = '') use ($input, $dialog, $output) {
+        if ($input->getOption($key)) {
+            return $input->getOption($key);
+        } else {
+            return  $dialog->ask($output, $key.$extra.': ');
+        }
+    };
+
+    $website = $getParameter('website');
+    $keyword = $getParameter('keyword');
+    //$notKeyword = $getParameter('notKeyword');
+    $notKeyword = false;
+
+    $logger = new Logger('bin');
+    $logger->pushHandler(new StreamHandler('Resources/logs/main.log', Logger::DEBUG));
+
+    $indexer = Factory::getInstance()->setup([
+    ], $logger)->getClient();
+
+    $subscription = FactorySubscription::buildFromDomain($website, ['contain' => $keyword, 'notContain' => $notKeyword]);
+
+    $capture = $indexer->run($subscription);
+    if ($capture) {
+        foreach($capture['pool'] as $item) {
+            printf("\n\n");
+            $output->writeln('* ['.$item->getDocument()->getTitle().']('.$item->getDocument()->getUri().')');
+            $output->writeln('Relevancy:'.$item->getDocument()->getRelevancy());
+        }
+    } else {
+        $output->writeln('<error>Not Found</error>');
+    }
+});
+
+$app->run();

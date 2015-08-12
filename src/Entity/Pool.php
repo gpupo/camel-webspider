@@ -16,12 +16,12 @@ namespace Gpupo\CamelWebspider\Entity;
 
 /**
  * Armazena a fila de Links processados.
- *
- * @author      Gilmar Pupo <g@g1mr.com>
  **/
 class Pool extends AbstractSpiderEgg
 {
     protected $name = 'Pool';
+
+    protected $errors;
 
     public function __construct($dependency = null)
     {
@@ -93,7 +93,7 @@ class Pool extends AbstractSpiderEgg
      */
     public function isDone(InterfaceLink $link)
     {
-        if ($cache = $this->cache->getObject($link->getId())) {
+        if ($this->cache && $cache = $this->cache->getObject($link->getId())) {
             return $cache->isDone();
         } else {
             return false;
@@ -114,7 +114,7 @@ class Pool extends AbstractSpiderEgg
             return false;
         }
 
-        if ($link->isDone()) {
+        if ($this->cache && $link->isDone()) {
             $this->cache->save($link->getId('string'), $link->toPackage());
         }
 
