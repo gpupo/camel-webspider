@@ -69,7 +69,7 @@ acessados diretamente do cache, pela aplicação que os utiliza.
 * PEAR [Text_Diff -maybe!](http://pear.php.net/package/Text_Diff)
 
 
-## Instalação
+# Instalação
 
 Linux / Mac OS X
 
@@ -82,11 +82,6 @@ Windows
 
 
 Bastará executar ``camel-webspider``.
-
-## Comando
-
-    camel-webspider find -w www.example.com -k interest -e notWord
-
 
 ## Instalação a partir do código fonte
 
@@ -105,6 +100,12 @@ Adicione o pacote ``camel-webspider`` ao seu projeto utilizando [composer](http:
     composer require camel-webspider
 
 ---
+
+# Comando
+
+    camel-webspider find -w www.example.com -k interest -e notWord
+
+--
 
 ## Você pode contribuir com o projeto!
 
