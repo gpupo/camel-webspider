@@ -17,8 +17,6 @@ namespace Gpupo\CamelWebspider\Spider;
 /**
  * Methods for DOMElements.
  *
- * @author      Gilmar Pupo <g@g1mr.com>
- *
  * @see         http://www.php.net/manual/en/class.domelement.php
  */
 class SpiderDom

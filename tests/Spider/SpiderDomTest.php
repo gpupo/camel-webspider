@@ -19,18 +19,6 @@ use Gpupo\CamelWebspider\Spider\SpiderDom;
 class SpiderDomTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @testdox Fail if wrong html is passed to convert HTML to DomElement
-     * @expectedException \Exception
-     * @group helper
-     * @group dom
-     * @dataProvider providerWrongHtml
-     */
-    public function testHtmToDomElementFail($wrongHtml)
-    {
-        return SpiderDom::htmlToDomElement($wrongHtml);
-    }
-
-    /**
      * @dataProvider providerHtmlElements
      */
     public function testOkIfValidHtmlIsPassed($text, $html)
@@ -143,7 +131,7 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
                 onselectstart="return false"
                 onselect="document.selection.empty()"
                 oncopy="document.selection.empty()"
-                onbeforecopy="return false">', '<div class="Newstime">'],
+                onbeforecopy="return false">', '<div>'],
             ['<div onclick="something">Some</div>', '<div>Some</div>'],
         ];
     }
@@ -152,7 +140,7 @@ class SpiderDomTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['<a href="#true">True Link</a>'],
-            ['<p style="color:#000">Text</p>'],
+            ['<p>Text</p>'],
         ];
     }
 

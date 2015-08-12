@@ -56,8 +56,6 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
         $client = new Zend_Http_Client();
         $client->setUri($url);
         //$response = $client->request();
-
-        //var_dump($response);
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
@@ -73,7 +71,6 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
         $request  = $client->getRequest();
         $response = $client->getResponse();
 
-        //var_dump($response);
         $this->markTestIncomplete(
           'This test has not been implemented yet.'
         );
@@ -122,19 +119,10 @@ class IndexerTest extends \PHPUnit_Framework_TestCase
 
     public function providerNavigation()
     {
-        $a = [];
-
-        $a[] = [
+        return [[
             'host'  => 'diversao.terra.com.br',
-            'paths' => ['/', '/tv/'],
-        ];
-
-        $a[] = [
-            'host'  => 'www.mozilla.org',
-            'paths' => ['/en-US/firefox/new/', '/en-US/firefox/features/', '/en-US/mobile/faq/'],
-        ];
-
-        return $a;
+            'paths' => ['/tv/', '/gente/'],
+        ]];
     }
 
     public function providerAuth()

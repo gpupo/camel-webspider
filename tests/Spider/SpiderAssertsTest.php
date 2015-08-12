@@ -14,6 +14,8 @@
 
 namespace Gpupo\Tests\CamelWebspider\Spider;
 
+use Gpupo\CamelWebspider\Spider\SpiderAsserts;
+
 class SpiderAssertsTest extends \PHPUnit_Framework_TestCase
 {
     /**

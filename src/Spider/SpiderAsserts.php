@@ -15,7 +15,6 @@
 namespace Gpupo\CamelWebspider\Spider;
 
 use Gpupo\CamelWebspider\Entity\InterfaceLink;
-use Respect\Validation\Validator as v;
 use Zend\Uri\Uri;
 
 class SpiderAsserts
@@ -26,7 +25,7 @@ class SpiderAsserts
             return $ifNull; // Subscription not contain filter for keywords
         }
         foreach ($keywords as $keyword) {
-            if (v::contains($keyword)->validate($txt)) {
+            if (mb_strpos(strtolower($txt), strtolower($keyword)) !== false) {
                 return true;
             }
         }
