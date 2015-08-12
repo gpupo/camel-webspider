@@ -12,14 +12,14 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\Document;
-use CamelSpider\Entity\InterfaceLink;
-use CamelSpider\Entity\InterfaceSubscription;
-use CamelSpider\Entity\Link;
-use CamelSpider\Entity\Pool;
-use CamelSpider\Spider\SpiderAsserts as a;
+use Gpupo\CamelWebspider\Entity\Document;
+use Gpupo\CamelWebspider\Entity\InterfaceLink;
+use Gpupo\CamelWebspider\Entity\InterfaceSubscription;
+use Gpupo\CamelWebspider\Entity\Link;
+use Gpupo\CamelWebspider\Entity\Pool;
+use Gpupo\CamelWebspider\Spider\SpiderAsserts as a;
 
 /**
  * Process every subscription.

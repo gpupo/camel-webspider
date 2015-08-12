@@ -12,11 +12,11 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Entity;
+namespace Gpupo\CamelWebspider\Entity;
 
-use CamelSpider\Spider\SpiderAsserts;
-use CamelSpider\Spider\SpiderDom;
-use CamelSpider\Tools\Urlizer;
+use Gpupo\CamelWebspider\Spider\SpiderAsserts;
+use Gpupo\CamelWebspider\Spider\SpiderDom;
+use Gpupo\CamelWebspider\Tools\Urlizer;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DomCrawler\Crawler;
 

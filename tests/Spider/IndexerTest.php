@@ -12,8 +12,9 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\Tests\CamelWebspider\Spider;
 
+use Gpupo\CamelWebspider\Spider\Indexer;
 use Goutte\Client;
 use Zend\Http\Client as Zend_Http_Client;
 

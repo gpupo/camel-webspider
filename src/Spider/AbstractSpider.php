@@ -12,10 +12,10 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\AbstractSpiderEgg;
-use CamelSpider\Entity\Pool;
+use Gpupo\CamelWebspider\Entity\AbstractSpiderEgg;
+use Gpupo\CamelWebspider\Entity\Pool;
 use Symfony\Component\DomCrawler\Form;
 
 abstract class AbstractSpider extends AbstractSpiderEgg

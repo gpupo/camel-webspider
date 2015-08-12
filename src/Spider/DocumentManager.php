@@ -12,10 +12,10 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\InterfaceLink;
-use CamelSpider\Entity\InterfaceSubscription;
+use Gpupo\CamelWebspider\Entity\InterfaceLink;
+use Gpupo\CamelWebspider\Entity\InterfaceSubscription;
 
 /**
  * Especializado em consultas aos documentos,

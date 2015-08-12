@@ -12,7 +12,9 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\Tests\CamelWebspider\Spider;
+
+use Gpupo\CamelWebspider\Spider\IndexAsserts;
 
 class SpiderAssertsTest extends \PHPUnit_Framework_TestCase
 {

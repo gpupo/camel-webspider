@@ -12,9 +12,9 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Tools\IdeiasLang;
+use Gpupo\CamelWebspider\Tools\IdeiasLang;
 
 /**
  * Helper for Strings.

@@ -12,7 +12,7 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Entity;
+namespace Gpupo\CamelWebspider\Entity;
 
 interface InterfaceSubscription extends InterfaceLink
 {

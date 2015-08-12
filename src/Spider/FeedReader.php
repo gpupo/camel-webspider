@@ -12,10 +12,10 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\AbstractSpiderEgg;
-use CamelSpider\Entity\Link;
+use Gpupo\CamelWebspider\Entity\AbstractSpiderEgg;
+use Gpupo\CamelWebspider\Entity\Link;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Feed\Reader\Reader;
 
