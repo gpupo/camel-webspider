@@ -14,9 +14,9 @@
 
 namespace Gpupo\CamelWebspider\Spider;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gpupo\CamelWebspider\Entity\AbstractSpiderEgg;
 use Gpupo\CamelWebspider\Entity\Link;
-use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Feed\Reader\Reader;
 
 /**
