@@ -85,7 +85,18 @@ Bastará executar ``camel-webspider``.
 
 ## Comando
 
-    camel-webspider find -w www.example.com -k interest
+    camel-webspider find -w www.example.com -k interest -e notWord
+
+
+## Instalação a partir do código fonte
+
+    git clone --depth=1 git@github.com:gpupo/camel-webspider.git;
+    cd camel-webspider;
+    ant composer;
+
+Neste modo, utilize ``./bin/main`` ao invéz de ``camel-webspider``:
+
+    ./bin/main find -w g1.globo.com -k dolar,luz,economia -e polícia,evento
 
 ## Instalação como biblioteca
 
