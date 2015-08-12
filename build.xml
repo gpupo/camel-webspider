@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="camel-webspider" default="build">
+ <target name="composer-rebuild" depends="clean,composer"/>
+ <target name="box.phar" depends="box.check" unless="box.file.exists">
+   <get src="https://github.com/box-project/box2/releases/download/2.5.2/box-2.5.2.phar" dest="${basedir}/box.phar" skipexisting="false"/>
+ </target>
+ <target name="box.check">
+   <condition property="box.file.exists">
+     <available file="${basedir}/box.phar" type="file" />
+   </condition>
+ </target>
+ <target name="build" depends="box.phar" description="Build pipe2.phar">
+     <exec executable="php">
+         <arg value="${basedir}/box.phar"/>
+         <arg value="build"/>
+     </exec>
+ </target>
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/vendor"/>
+  <delete file="${basedir}/composer.lock"/>
+ </target>
+ <target name="composer" depends="clean" description="Install dependencies with Composer">
+  <tstamp>
+   <format property="thirty.days.ago" pattern="MM/dd/yyyy hh:mm aa" offset="-30" unit="day"/>
+  </tstamp>
+  <delete>
+   <fileset dir="${basedir}">
+    <include name="composer.phar" />
+    <date datetime="${thirty.days.ago}" when="before"/>
+   </fileset>
+  </delete>
+  <get src="https://getcomposer.org/composer.phar" dest="${basedir}/composer.phar" skipexisting="true"/>
+  <exec executable="php">
+   <arg value="composer.phar"/>
+   <arg value="install"/>
+  </exec>
+ </target>
+</project>

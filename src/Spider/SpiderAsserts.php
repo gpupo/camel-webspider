@@ -25,7 +25,7 @@ class SpiderAsserts
             return $ifNull; // Subscription not contain filter for keywords
         }
         foreach ($keywords as $keyword) {
-            if (mb_strpos(strtolower($txt), strtolower($keyword)) !== false) {
+            if (!empty($keyword) && !empty($text) && mb_strpos(strtolower($txt), strtolower($keyword)) !== false) {
                 return true;
             }
         }
