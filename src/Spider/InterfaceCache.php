@@ -12,7 +12,7 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
 /*
 * This file is part of the CamelSpider package.

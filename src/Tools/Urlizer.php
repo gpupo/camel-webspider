@@ -12,7 +12,7 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Tools;
+namespace Gpupo\CamelWebspider\Tools;
 
 /**
  * This is the part taken from Doctrine 1.2.3

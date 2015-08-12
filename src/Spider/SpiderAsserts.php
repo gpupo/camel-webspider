@@ -12,9 +12,9 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\InterfaceLink;
+use Gpupo\CamelWebspider\Entity\InterfaceLink;
 use Respect\Validation\Validator as v;
 use Zend\Uri\Uri;
 

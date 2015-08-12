@@ -12,11 +12,11 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Spider;
+namespace Gpupo\CamelWebspider\Spider;
 
-use CamelSpider\Entity\AbstractSpiderEgg;
-use CamelSpider\Entity\FactorySubscription;
-use CamelSpider\Entity\Pool;
+use Gpupo\CamelWebspider\Entity\AbstractSpiderEgg;
+use Gpupo\CamelWebspider\Entity\FactorySubscription;
+use Gpupo\CamelWebspider\Entity\Pool;
 
 /**
  * Aciona indexação para cada assinatura.

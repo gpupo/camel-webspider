@@ -12,7 +12,7 @@
  * <http://www.g1mr.com/camel-webspider/>.
  */
 
-namespace CamelSpider\Entity;
+namespace Gpupo\CamelWebspider\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
