@@ -19,6 +19,7 @@ $app->register('find')
 ->setDefinition([
        new InputOption('website', 'w', InputOption::VALUE_REQUIRED),
        new InputOption('keyword', 'k', InputOption::VALUE_REQUIRED),
+       new InputOption('notKeyword', 'e', InputOption::VALUE_OPTIONAL),
    ])
 ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
     $dialog = $app->getHelperSet()->get('dialog');
@@ -33,8 +34,7 @@ $app->register('find')
 
     $website = $getParameter('website');
     $keyword = $getParameter('keyword');
-    //$notKeyword = $getParameter('notKeyword');
-    $notKeyword = false;
+    $notKeyword = $getParameter('notKeyword');
 
     $logger = new Logger('bin');
     $logger->pushHandler(new StreamHandler('Resources/logs/main.log', Logger::DEBUG));
@@ -47,9 +47,11 @@ $app->register('find')
     $capture = $indexer->run($subscription);
     if ($capture) {
         foreach($capture['pool'] as $item) {
-            printf("\n\n");
-            $output->writeln('* ['.$item->getDocument()->getTitle().']('.$item->getDocument()->getUri().')');
-            $output->writeln('Relevancy:'.$item->getDocument()->getRelevancy());
+            if ($item->getDocument()->getRelevancy() > 1) {
+                printf("\n");
+                $output->writeln('* [<info>'.$item->getDocument()->getTitle().'</info>](<comment>'.$item->getDocument()->getUri().'</comment>)');
+                $output->writeln('Relevancy:<info>'.$item->getDocument()->getRelevancy().'</info>');
+            }
         }
     } else {
         $output->writeln('<error>Not Found</error>');
