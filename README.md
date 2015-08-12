@@ -108,3 +108,5 @@ Este projeto utiliza idéias e conceitos de projetos existentes, sendo eles:
 ## Licença
 
 MIT, see [LICENSE](https://github.com/gpupo/camel-webspider/blob/master/LICENSE).
+
+---

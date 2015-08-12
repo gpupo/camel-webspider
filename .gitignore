@@ -1,4 +1,7 @@
 *.swp
 .DS_Store
-composer.phar
 vendor/*
+build/*
+phpunit.xml
+Resources/*
+*.phar
