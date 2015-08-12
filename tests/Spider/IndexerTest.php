@@ -14,8 +14,8 @@
 
 namespace Gpupo\Tests\CamelWebspider\Spider;
 
-use Gpupo\CamelWebspider\Spider\Indexer;
 use Goutte\Client;
+use Gpupo\CamelWebspider\Spider\Indexer;
 use Zend\Http\Client as Zend_Http_Client;
 
 class IndexerTest extends \PHPUnit_Framework_TestCase
