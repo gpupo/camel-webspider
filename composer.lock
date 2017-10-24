@@ -567,7 +567,7 @@
             "authors": [
                 {
                     "name": "Gilmar Pupo",
-                    "email": "g@g1mr.com"
+                    "email": "contact@gpupo.com"
                 }
             ],
             "description": "Common Objects",
@@ -617,11 +617,11 @@
             "authors": [
                 {
                     "name": "Gilmar Pupo",
-                    "email": "g@g1mr.com"
+                    "email": "contact@gpupo.com"
                 }
             ],
             "description": "Componente de uso comum entre SDKs para integração a partir de aplicações PHP com Restful webservices",
-            "homepage": "http://www.g1mr.com/common-sdk/",
+            "homepage": "https://opensource.gpupo.com/common-sdk/",
             "keywords": [
                 "sdk"
             ],

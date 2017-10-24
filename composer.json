@@ -1,11 +1,11 @@
 {
     "name": "gpupo/camel-webspider",
     "description": "Web crawler para coleta de documentos a partir de fontes e interesses",
-    "homepage": "http://www.g1mr.com/camel-webspider/",
+    "homepage": "https://opensource.gpupo.com/camel-webspider/",
     "authors": [
         {
             "name": "Gilmar Pupo",
-            "email": "g@g1mr.com"
+            "email": "contact@gpupo.com"
         }
     ],
     "license": "MIT",
